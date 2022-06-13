@@ -1,11 +1,10 @@
-from django.core.checks import messages
+from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from .forms import CommentForm, EditProfileForm, NewProjectForm
 from .models import Profile, Project, Comments, Rating
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
-from Appwards.models import Project
 # Create your views here.
 @login_required(login_url='/accounts/login/')
 def welcome(request):
@@ -30,8 +29,9 @@ def search_reslts(request):
     else:
         message = 'You have not entered anything to search '
         return render(request, 'search.html', {'message':message})
+
 @login_required(login_url='/accounts/login/')
-def new_project(request):
+def Newproject(request):
     if request.method=='POST':
         form = NewProjectForm(request.POST, request.FILES)
         if form.is_valid():
@@ -42,7 +42,6 @@ def new_project(request):
     else:
         form = NewProjectForm()
         return render(request, 'new_project.html', {'form':form})
-
 @login_required(login_url='/accounts/login/')
 def single_project(request, id):
     project = Project.objects.get(id=id)
@@ -51,28 +50,22 @@ def single_project(request, id):
     designrate = []
     usabilityrate =[]
     contentrate = []
-
     if rates:
-        for rates in rates:
+        for rate in rates:
             designrate.append(rate.design)
             usabilityrate.append(rate.usability)
             contentrate.append(rate.content)
-
+        
         total = len(designrate)*10
         design = round(sum(designrate)/total*100, 1)
         usability = round(sum(usabilityrate)/total*100,1)
         content = round(sum(contentrate)/total*100,1)
         return render(request, 'single_project.html',{'project':project, 'comments':comments,'design': design,'usability': usability, 'content':content})
-
     else:
         design = 0
         usability = 0
         content = 0
-
         return render(request, 'single_project.html',{'project':project, 'comments':comments, 'design': design,'usability':usability, 'content':content})
-
-
-
 @login_required(login_url='/accounts/login/')
 def edit_profile(request):
     user = request.user
@@ -119,7 +112,7 @@ def rate(request, id):
         content = request.POST.get('content')
         if design and usability and content:
             project = Project.objects.get(id=id)
-            rate = Rating(design = design, usability = usability, content=content, project_id = project, user = request.user)
+            rate = Rating(design = design, usability = usability, content = content, project_id = project, user = request.user)
             rate.save()
             return redirect('singlproject', id)
         else:
