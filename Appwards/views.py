@@ -5,9 +5,7 @@ from .forms import CommentForm, EditProfileForm, NewProjectForm
 from .models import Profile, Project, Comments, Rating
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
-
 from Appwards.models import Project
-
 # Create your views here.
 @login_required(login_url='/accounts/login/')
 def welcome(request):
@@ -20,11 +18,9 @@ def index(request):
 def profile(request):
     profiles= Project.objects.filter(user = request.user)
     return render(request,'profile.hmtl', {'profiles':profiles})
-
-
 @login_required(login_url='/accounts/login/')
 def search_reslts(request):
-
+    
     if 'project' in request.GET and request.GET['project']:
         search_term = request.GET.get('project')
         searched_project =Project.search_project(search_term)
@@ -46,6 +42,37 @@ def new_project(request):
     else:
         form = NewProjectForm()
         return render(request, 'new_project.html', {'form':form})
+
+@login_required(login_url='/accounts/login/')
+def single_project(request, id):
+    project = Project.objects.get(id=id)
+    comments = Comments.objects.filter(project_id=id)
+    rates = Rating.objects.filter(project_id = id)
+    designrate = []
+    usabilityrate =[]
+    contentrate = []
+
+    if rates:
+        for rates in rates:
+            designrate.append(rate.design)
+            usabilityrate.append(rate.usability)
+            contentrate.append(rate.content)
+
+        total = len(designrate)*10
+        design = round(sum(designrate)/total*100, 1)
+        usability = round(sum(usabilityrate)/total*100,1)
+        content = round(sum(contentrate)/total*100,1)
+        return render(request, 'single_project.html',{'project':project, 'comments':comments,'design': design,'usability': usability, 'content':content})
+
+    else:
+        design = 0
+        usability = 0
+        content = 0
+
+        return render(request, 'single_project.html',{'project':project, 'comments':comments, 'design': design,'usability':usability, 'content':content})
+
+
+
 @login_required(login_url='/accounts/login/')
 def edit_profile(request):
     user = request.user
@@ -56,11 +83,9 @@ def edit_profile(request):
             profile.user = request.user
             profile.save()
             return redirect('profile')
-
     else:
         form = EditProfileForm(request.POST, request.FILES)
     return render(request, 'update_profile.html',{'form': form})
-
 @login_required(login_url='/accounts/login/')
 def comment(request,id):
     id = id
@@ -73,18 +98,14 @@ def comment(request,id):
             comment.project_id=project
             comment.save()
             return redirect('home')
-
         else:
             project_id=id
             messages.info(request, 'Fill in all the fields')
             return redirect('comment', id=project_id)
-
     else:
         id = id
         form = CommentForm()
         return render(request, 'comment.html', {'form':form, 'id':id})
-
-
 @login_required(login_url='/accounts/login/')
 def rate(request, id):
     if request.method =='POST':
@@ -96,20 +117,18 @@ def rate(request, id):
         design = request.POST.get('design')
         usability = request.POST.get('usability')
         content = request.POST.get('content')
-
         if design and usability and content:
             project = Project.objects.get(id=id)
             rate = Rating(design = design, usability = usability, content=content, project_id = project, user = request.user)
             rate.save()
             return redirect('singlproject', id)
-
         else:
             messages.info(request,'Input all fields')
             return redirect('singleproject', id)
     else:
         messages.info(request, 'Input all fields')
         return redirect('singleproject', id)
-
+            
 @login_required(login_url='/accounts/login/')
 def logout_request(request):
     logout(request)
