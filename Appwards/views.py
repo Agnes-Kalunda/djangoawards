@@ -5,18 +5,24 @@ from .forms import CommentForm, EditProfileForm, NewProjectForm
 from .models import Profile, Project, Comments, Rating
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializer import ProlfileSerializer,ProjectSerializer
+from rest_framework import status
+from .permissions import IsAdminOrReadOnly
+
+
 # Create your views here.
 @login_required(login_url='/accounts/login/')
 def welcome(request):
     return render(request, 'welcome.html')
-@login_required(login_url='/accounts/login/')
 def index(request):
     all_projects = Project.all_projects()
-    return render(request, 'index.html', {'all_projects':all_projects})
+    return render(request, 'index.html', {'all_projects': all_projects})
 @login_required(login_url='/accounts/login/')
-def profile(request):
-    profiles= Project.objects.filter(user = request.user)
-    return render(request,'profile.hmtl', {'profiles':profiles})
+def user_profile(request):
+    all_profiles= Project.objects.filter(user = request.user)
+    return render(request,'profile.html', {'all_profiles':all_profiles})
 @login_required(login_url='/accounts/login/')
 def search_reslts(request):
     
@@ -24,7 +30,7 @@ def search_reslts(request):
         search_term = request.GET.get('project')
         searched_project =Project.search_project(search_term)
         message = f'{search_term}'
-        return render(request,'search.html', {'message':message,'projects':searched_project})
+        return render(request,'search.html', {'message':message,'project':searched_project})
     
     else:
         message = 'You have not entered anything to search '
@@ -37,14 +43,10 @@ def Newproject(request):
             project = form.save(commit=False)
             project.user = request.user
             project.save()
-
             return redirect('home')
     else:
-
         form = NewProjectForm()
         return render(request, 'New-project.html', {'form':form})
-
-
 @login_required(login_url='/accounts/login/')
 def singleProject(request, id):
     project = Project.objects.get(id=id)
@@ -70,7 +72,7 @@ def singleProject(request, id):
         content = 0
         return render(request, 'single_project.html',{'project':project, 'comments':comments, 'design': design,'usability':usability, 'content':content})
 @login_required(login_url='/accounts/login/')
-def edit_profile(request):
+def profileEdit(request):
     user = request.user
     if request.method=='POST':
         form = EditProfileForm(request.POST, request.FILES)
@@ -102,8 +104,6 @@ def comment(request,id):
         id = id
         form = CommentForm()
         return render(request, 'comment.html', {'form':form, 'id':id})
-
-
 @login_required(login_url='/accounts/login/')
 def Rate(request, id):
     if request.method =='POST':
@@ -131,3 +131,32 @@ def Rate(request, id):
 def logoutRequest(request):
     logout(request)
     return redirect('home')
+
+
+class ProjectRest(APIView):
+    permission_classes = (IsAdminOrReadOnly,)
+    def get(self, request, format=None):
+        all_project = Project.objects.all()
+        serializers = ProjectSerializer(all_project, many=True)
+        return Response(serializers.data)
+
+    def post(self, request, format=None):
+        serializers = ProjectSerializer(data=request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data, status=status.HTTP_201_CREATED)
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ProifleRest(APIView):
+    permission_classes = (IsAdminOrReadOnly,)
+    def get(self, request, format=None):
+        all_profile = Profile.objects.all()
+        serializers = ProlfileSerializer(all_profile, many=True)
+        return Response(serializers.data)
+
+    def post(self, request, format=None):
+        serializers = ProlfileSerializer(data=request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data, status=status.HTTP_201_CREATED)
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
