@@ -29,7 +29,6 @@ def search_reslts(request):
     else:
         message = 'You have not entered anything to search '
         return render(request, 'search.html', {'message':message})
-
 @login_required(login_url='/accounts/login/')
 def Newproject(request):
     if request.method=='POST':
@@ -41,7 +40,9 @@ def Newproject(request):
             return redirect('home')
     else:
         form = NewProjectForm()
-        return render(request, 'new_project.html', {'form':form})
+        return render(request, 'New-project.html', {'form':form})
+
+
 @login_required(login_url='/accounts/login/')
 def single_project(request, id):
     project = Project.objects.get(id=id)
