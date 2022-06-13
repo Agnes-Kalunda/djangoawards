@@ -41,7 +41,7 @@ class Comments(models.Model):
     text = models.CharField(max_length=200)
     project_id = models.ForeignKey(Project, on_delete=models.CASCADE)
     def __str__(self):
-        return self.user
+        return self.text
     
     def save_comments(self):
         self.save()
