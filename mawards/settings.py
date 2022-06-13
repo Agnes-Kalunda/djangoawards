@@ -108,6 +108,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+cloudinary.config( 
+  cloud_name = "dd206fmmw", 
+  api_key = "423815319196181", 
+  api_secret = "ydJi_a5TIETAFMMogbI4rKDWVek",
+
+)
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
@@ -128,12 +135,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-cloudinary.config( 
-  cloud_name = "dd206fmmw", 
-  api_key = "423815319196181", 
-  api_secret = "ydJi_a5TIETAFMMogbI4rKDWVek",
-#   secure = true
-)
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
