@@ -19,7 +19,7 @@ from django.urls import path
 from django.contrib.auth import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('Appward.urls')),
+    path('', include('Appwards.urls')),
     url(r'^accounts/', include('registration.backends.simple.urls')),
     url(r'^logout/$', views.LogoutView.as_view(), {"next_page": '/'}),
     url(r'^tinymce/', include('tinymce.urls')),

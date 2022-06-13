@@ -1,13 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
-
 # Create your models here.
 class Profile(models.Model):
     profile_pic = CloudinaryField('image')
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(max_length=500)
-    information = models.TextField(max_length=500)
+    info = models.TextField(max_length=500)
+
     def __str__(self):
         return self.user
     
@@ -15,7 +15,6 @@ class Profile(models.Model):
         return self.save()
     def delete_profile(self):
         return self.delete()
-
 class Project(models.Model):
     title = models.CharField(max_length=250)
     image = CloudinaryField('image')
