@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'Appwards',
     'bootstrap4',
     'cloudinary',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
