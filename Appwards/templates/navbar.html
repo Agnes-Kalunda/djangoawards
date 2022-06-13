@@ -34,10 +34,11 @@
             <a href="{%url 'newproject' %}">New Post</a>
           </li>
           <li>
-            <a href="{%url 'logout' %}">Logout</a>
+            <a href="{%url 'profile' %}">Profile</a>
+
           </li>
           <li>
-            <a href="{%url 'profile' %}">Profile</a>
+            <a href="{%url 'logout' %}">Logout</a>
           </li>
         </ul>
       </li>
@@ -50,9 +51,7 @@
   </div>
    <!-- Adding a search form  -->
    <div class="col-sm-4 col-md-4 navbar-right">
-
     <form class="navbar-form" role="search"  action="{%url 'search_outcomes' %}">
-
       <div class="input-group">
         <input type="text" class="form-control" placeholder="Search" name="author">
         <div class="input-group-btn">
