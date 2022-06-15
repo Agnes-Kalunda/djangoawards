@@ -38,7 +38,6 @@
 
 ## Contact Information   
 If you have any question or contributions, please email me at agnes.mbiti@student.moringaschool.com
-## live link 
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
