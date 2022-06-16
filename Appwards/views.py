@@ -10,13 +10,11 @@ from rest_framework.views import APIView
 from .serializer import ProlfileSerializer,ProjectSerializer
 from rest_framework import status
 from .permissions import IsAdminOrReadOnly
-
-
 # Create your views here.
 @login_required(login_url='/accounts/login/')
 def welcome(request):
     return render(request, 'welcome.html')
-@login_required(login_url='/accounts/login/')
+
 def index(request):
     all_projects = Project.all_projects()
     return render(request, 'index.html', {'all_projects': all_projects})
@@ -132,29 +130,24 @@ def Rate(request, id):
 def logoutRequest(request):
     logout(request)
     return redirect('home')
-
-
 class ProjectRest(APIView):
     permission_classes = (IsAdminOrReadOnly,)
     def get(self, request, format=None):
         all_project = Project.objects.all()
         serializers = ProjectSerializer(all_project, many=True)
         return Response(serializers.data)
-
     def post(self, request, format=None):
         serializers = ProjectSerializer(data=request.data)
         if serializers.is_valid():
             serializers.save()
             return Response(serializers.data, status=status.HTTP_201_CREATED)
         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
-
 class ProifleRest(APIView):
     permission_classes = (IsAdminOrReadOnly,)
     def get(self, request, format=None):
         all_profile = Profile.objects.all()
         serializers = ProlfileSerializer(all_profile, many=True)
         return Response(serializers.data)
-
     def post(self, request, format=None):
         serializers = ProlfileSerializer(data=request.data)
         if serializers.is_valid():

@@ -29,13 +29,13 @@ SECRET_KEY = 'django-insecure-cdmqrv9!1cy$v=-ff7u5g62nsbj%scy@!ypffpc6o#(0&uk()i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1',]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'rest_framework',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'cloudinary',
     'tinymce',
+   
     
 ]
 
@@ -142,6 +143,10 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'login'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
